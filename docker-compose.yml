@@ -1,0 +1,44 @@
+version: '3.2'
+services:
+   blockproducer:
+       container_name: blockproducer 
+       image: parity/parity:beta
+       volumes:
+       - ./deployment/chain/spec.json:/parity/spec.json:ro
+       - ./deployment/chain/reserved_peers:/parity/reserved_peers:ro
+       - ./deployment/blockproducer/password:/parity/password:ro
+       - ./deployment/blockproducer/authority.toml:/parity/authority.toml:ro
+       - ./deployment/blockproducer/key.priv:/parity/data/network/key:ro
+       - ./data/blockproducer:/parity/data
+       command: --chain /parity/spec.json --config /parity/blockproducer.toml -d /parity/data  
+   validator:
+       container_name: validator
+       image: parity/parity:beta
+       ports:
+       - 8080:8080
+       - 8180:8180
+       - 8545:8545
+       - 8546:8546
+       - 30303:30303
+       volumes:
+       - ./deployment/chain/spec.json:/parity/spec.json:ro
+       - ./deployment/chain/reserved_peers:/parity/reserved_peers:ro
+       - ./deployment/validator/password:/parity/password:ro
+       - ./deployment/validator/client.toml:/parity/client.toml:ro
+       - ./deployment/validator/key.priv:/parity/data/network/key:ro
+       - ./deployment/validator/authcodes.txt:/parity/data/signer/authcodes:ro
+       - ./data/validator:/parity/data
+       command: --chain /parity/spec.json --config /parity/validator.toml -d /parity/data  
+       depends_on:
+       - "blockproducer"
+   monitor:
+      image: buythewhale/ethstats_monitor
+      volumes:
+      - ./monitor/app.json:/home/ethnetintel/eth-net-intelligence-api/app.json:ro
+   dashboard:
+      image: buythewhale/ethstats
+      volumes:
+      - ./dashboard/ws_secret.json:/eth-netstats/ws_secret.json:ro
+      ports:
+      - 3001:3000
+

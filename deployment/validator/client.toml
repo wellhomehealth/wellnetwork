@@ -1,0 +1,35 @@
+[parity]
+chain = "/parity/spec.json"
+
+[account]
+password = ["/parity/password"]
+
+[network]
+reserved_peers = "/parity/reserved_peers"
+
+[websockets]
+disable = false
+port = 8546
+interface = "all"
+origins = ["*"]
+apis = ["web3", "eth", "net", "parity", "traces", "rpc", "secretstore"]
+hosts = ["all"]
+
+[rpc]
+interface = "0.0.0.0"
+cors = ["all"]
+hosts = ["all"]
+apis = ["web3", "eth", "net", "parity", "traces", "rpc", "personal", "parity_accounts", "signer", "parity_set"]
+
+[ui]
+force = true
+
+[footprint]
+pruning = "archive"
+tracing = "on"
+fat_db = "on"
+db_compaction = "ssd"
+
+[misc]
+#logging = "debug"
+#log_file = "node.log"
